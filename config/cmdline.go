@@ -1,11 +1,11 @@
-package main
+package config
 
 import (
 	"flag"
 	"os"
 )
 
-func parseArgs() string {
+func ParseCmdlineArgs() string {
 	ticker := flag.String("lookup", "", "Stock ticker symbol")
 	flag.StringVar(ticker, "l", "", "Stock ticker symbol")
 

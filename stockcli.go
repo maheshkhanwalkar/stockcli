@@ -2,15 +2,23 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"os"
+	"stockcli/config"
 	"stockcli/data"
 )
 
 func main() {
-	ticker := parseArgs()
+	ticker := config.ParseCmdlineArgs()
+	configs, err := config.LoadConfigFile()
+
+	if err != nil {
+		log.Fatal("Error loading config file: ", err)
+	}
+
 	println("Looking up basic stock data for " + ticker)
 
-	provider := getDataProvider()
+	provider := getDataProvider(configs)
 	price, err := provider.Quote(ticker)
 
 	if err != nil {
@@ -21,7 +29,6 @@ func main() {
 	fmt.Printf("Stock: %s, Price: %f\n", ticker, price)
 }
 
-func getDataProvider() data.Provider {
-	// TODO - get from config
-	return &data.AlphaVantageProvider{ApiKey: "REDACTED"}
+func getDataProvider(configs map[string]string) data.Provider {
+	return &data.AlphaVantageProvider{ApiKey: configs["ApiKey"]}
 }
