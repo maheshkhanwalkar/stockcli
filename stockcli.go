@@ -1,5 +1,6 @@
 package main
 
 func main() {
-	println("Hello, world")
+	ticker := parseArgs()
+	println("Looking up basic stock data for " + ticker)
 }
