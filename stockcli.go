@@ -20,7 +20,7 @@ func main() {
 	quote, err := provider.Quote(ticker)
 
 	if err != nil {
-		fmt.Println(err)
+		fmt.Println("Failed to retrieve quote: " + err.Error())
 		os.Exit(1)
 	}
 

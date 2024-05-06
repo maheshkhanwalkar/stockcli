@@ -2,6 +2,7 @@ package data
 
 import (
 	"encoding/json"
+	"errors"
 	"io"
 	"net/http"
 	"strconv"
@@ -38,6 +39,10 @@ func (provider AlphaVantageProvider) Quote(ticker string) (*Quote, error) {
 
 	if err = json.Unmarshal(body, &quoteResponse); err != nil {
 		return nil, err
+	}
+
+	if quoteResponse.Quote.Price == "" {
+		return nil, errors.New(ticker + " does not exist")
 	}
 
 	price, err := strconv.ParseFloat(quoteResponse.Quote.Price, 64)
