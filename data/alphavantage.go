@@ -7,7 +7,7 @@ import (
 	"strconv"
 )
 
-const QuoteUrl = "https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol="
+const quoteUrl = "https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol="
 
 type QuoteResponse struct {
 	Quote struct {
@@ -20,7 +20,7 @@ type AlphaVantageProvider struct {
 }
 
 func (provider AlphaVantageProvider) Quote(ticker string) (*Quote, error) {
-	fullUrl := QuoteUrl + ticker + "&apikey=" + provider.ApiKey
+	fullUrl := quoteUrl + ticker + "&apikey=" + provider.ApiKey
 	resp, err := http.Get(fullUrl)
 
 	if err != nil {

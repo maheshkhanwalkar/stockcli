@@ -6,6 +6,8 @@ import (
 	"strings"
 )
 
+const fileRelPath = "/.stockcli/config"
+
 func LoadConfigFile() (map[string]string, error) {
 	homeDir, err := os.UserHomeDir()
 
@@ -13,7 +15,7 @@ func LoadConfigFile() (map[string]string, error) {
 		return nil, err
 	}
 
-	fullPath := homeDir + "/.stockcli/config"
+	fullPath := homeDir + fileRelPath
 	file, err := os.Open(fullPath)
 
 	if err != nil {
