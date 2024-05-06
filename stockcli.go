@@ -24,7 +24,7 @@ func main() {
 		os.Exit(1)
 	}
 
-	fmt.Printf("Stock: %s, Price: %f\n", quote.Ticker, quote.Price)
+	fmt.Printf("Stock: %s, Name: %s, Price: %f\n", quote.Ticker, quote.Name, quote.Price)
 }
 
 func getDataProvider(configs map[string]string) data.Provider {

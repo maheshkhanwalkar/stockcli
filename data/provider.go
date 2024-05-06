@@ -4,6 +4,8 @@ package data
 type Quote struct {
 	// Ticker stock ticker
 	Ticker string
+	// Name company name
+	Name string
 	// Price quoted stock price
 	Price float64
 }

@@ -7,11 +7,16 @@ import (
 )
 
 const alphaQuoteUrl = "https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol="
+const alphaCompanyInfoUrl = "https://www.alphavantage.co/query?function=OVERVIEW&symbol="
 
 type QuoteResponse struct {
 	Quote struct {
 		Price string `json:"05. price"`
 	} `json:"Global Quote"`
+}
+
+type CompanyInfoResponse struct {
+	Name string
 }
 
 // AlphaVantageProvider data provider
@@ -20,10 +25,19 @@ type AlphaVantageProvider struct {
 }
 
 func (provider AlphaVantageProvider) Quote(ticker string) (*Quote, error) {
-	fullUrl := alphaQuoteUrl + ticker + "&apikey=" + provider.ApiKey
-	quoteResponse := QuoteResponse{}
+	args := ticker + "&apikey=" + provider.ApiKey
 
-	if err := net.GetJson(fullUrl, &quoteResponse); err != nil {
+	fullQuoteUrl := alphaQuoteUrl + args
+	fullCompanyInfoUrl := alphaCompanyInfoUrl + args
+
+	quoteResponse := QuoteResponse{}
+	companyInfo := CompanyInfoResponse{}
+
+	if err := net.GetJson(fullQuoteUrl, &quoteResponse); err != nil {
+		return nil, err
+	}
+
+	if err := net.GetJson(fullCompanyInfoUrl, &companyInfo); err != nil {
 		return nil, err
 	}
 
@@ -32,5 +46,10 @@ func (provider AlphaVantageProvider) Quote(ticker string) (*Quote, error) {
 	}
 
 	price, err := strconv.ParseFloat(quoteResponse.Quote.Price, 64)
-	return &Quote{Ticker: ticker, Price: price}, err
+
+	if err != nil {
+		return nil, err
+	}
+
+	return &Quote{Ticker: ticker, Price: price, Name: companyInfo.Name}, err
 }
