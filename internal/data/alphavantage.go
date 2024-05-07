@@ -76,6 +76,10 @@ func (provider AlphaVantageProvider) HistoricData(ticker string) (*HistoricData,
 func parseHistoricData(response *HistoricDataResponse, ticker string) (*HistoricData, error) {
 	result := make(map[time.Time]float64)
 
+	if len(response.TimeSeries) == 0 {
+		return nil, errors.New("no data returned, check API key")
+	}
+
 	for timeStr, value := range response.TimeSeries {
 		closingPrice, err := strconv.ParseFloat(value["4. close"], 64)
 
