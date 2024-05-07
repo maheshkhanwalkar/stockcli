@@ -8,6 +8,7 @@ import (
 
 const alphaQuoteUrl = "https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol="
 const alphaCompanyInfoUrl = "https://www.alphavantage.co/query?function=OVERVIEW&symbol="
+const alphaHistoricDataUrl = "https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol="
 
 type QuoteResponse struct {
 	Quote struct {
@@ -17,6 +18,10 @@ type QuoteResponse struct {
 
 type CompanyInfoResponse struct {
 	Name string
+}
+
+type HistoricDataResponse struct {
+	TimeSeries map[string]map[string]string `json:"Time Series (Daily)"`
 }
 
 // AlphaVantageProvider data provider
@@ -52,4 +57,33 @@ func (provider AlphaVantageProvider) Quote(ticker string) (*Quote, error) {
 	}
 
 	return &Quote{Ticker: ticker, Price: price, Name: companyInfo.Name}, err
+}
+
+func (provider AlphaVantageProvider) HistoricData(ticker string) (*HistoricData, error) {
+	args := ticker + "&apikey=" + provider.ApiKey
+
+	fullHistoricDataUrl := alphaHistoricDataUrl + args
+	historicData := HistoricDataResponse{}
+
+	if err := net.GetJson(fullHistoricDataUrl, &historicData); err != nil {
+		return nil, err
+	}
+
+	return parseHistoricData(&historicData, ticker)
+}
+
+func parseHistoricData(response *HistoricDataResponse, ticker string) (*HistoricData, error) {
+	result := make(map[string]float64)
+
+	for time, value := range response.TimeSeries {
+		closingPrice, err := strconv.ParseFloat(value["4. close"], 64)
+
+		if err != nil {
+			continue
+		}
+
+		result[time] = closingPrice
+	}
+
+	return &HistoricData{Ticker: ticker, Data: result}, nil
 }

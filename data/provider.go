@@ -10,7 +10,15 @@ type Quote struct {
 	Price float64
 }
 
+type HistoricData struct {
+	// Ticker stock ticker
+	Ticker string
+	// Data historic data keyed by date
+	Data map[string]float64
+}
+
 // Provider data provider interface
 type Provider interface {
 	Quote(ticker string) (*Quote, error)
+	HistoricData(ticker string) (*HistoricData, error)
 }

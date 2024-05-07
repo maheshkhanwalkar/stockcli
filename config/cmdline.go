@@ -5,16 +5,35 @@ import (
 	"os"
 )
 
-func ParseCmdlineArgs() string {
-	ticker := flag.String("lookup", "", "Stock ticker symbol")
-	flag.StringVar(ticker, "l", "", "Stock ticker symbol")
+type CmdType int
+
+const (
+	LOOKUP CmdType = iota
+	GRAPH
+)
+
+type CmdlineArgs struct {
+	Ticker  string
+	CmdType CmdType
+}
+
+func ParseCmdlineArgs() *CmdlineArgs {
+	lookupTicker := flag.String("lookup", "", "Look up a stock ticker symbol")
+	flag.StringVar(lookupTicker, "l", "", "Look up a stock ticker symbol")
+
+	graphTicker := flag.String("graph", "", "Graph historic data for a stock ticker symbol")
+	flag.StringVar(graphTicker, "g", "", "Graph historic data for a stock ticker symbol")
 
 	flag.Parse()
 
-	if *ticker == "" {
+	if *graphTicker == "" && *lookupTicker == "" {
 		flag.PrintDefaults()
 		os.Exit(1)
 	}
 
-	return *ticker
+	if *graphTicker != "" {
+		return &CmdlineArgs{Ticker: *graphTicker, CmdType: GRAPH}
+	} else {
+		return &CmdlineArgs{Ticker: *lookupTicker, CmdType: LOOKUP}
+	}
 }

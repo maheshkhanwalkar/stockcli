@@ -6,7 +6,7 @@ import (
 	"net/http"
 )
 
-// GetJson retrieve and marshall JSON object from the provided url
+// GetJson retrieve and unmarshall JSON object from the provided url
 func GetJson(url string, target interface{}) error {
 	resp, err := http.Get(url)
 
