@@ -1,5 +1,14 @@
 # stockcli
 
+## Initialize stockcli
+
+```
+stockcli -init
+```
+
+Enter in your AlphaVantage API key when prompted. This will be saved in the `~/.stockcli/config` file which the other
+commands will automatically read from.
+
 ## Lookup stock quote for a ticker
 
 ```

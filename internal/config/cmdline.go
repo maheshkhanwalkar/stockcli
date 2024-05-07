@@ -10,6 +10,7 @@ type CmdType int
 const (
 	LOOKUP CmdType = iota
 	GRAPH
+	INIT
 )
 
 type CmdlineArgs struct {
@@ -18,6 +19,8 @@ type CmdlineArgs struct {
 }
 
 func ParseCmdlineArgs() *CmdlineArgs {
+	init := flag.Bool("init", false, "initialize stockcli configuration")
+
 	lookupTicker := flag.String("lookup", "", "Look up a stock ticker symbol")
 	flag.StringVar(lookupTicker, "l", "", "Look up a stock ticker symbol")
 
@@ -25,6 +28,10 @@ func ParseCmdlineArgs() *CmdlineArgs {
 	flag.StringVar(graphTicker, "g", "", "Graph historic data for a stock ticker symbol")
 
 	flag.Parse()
+
+	if *init {
+		return &CmdlineArgs{CmdType: INIT}
+	}
 
 	if *graphTicker == "" && *lookupTicker == "" {
 		flag.PrintDefaults()

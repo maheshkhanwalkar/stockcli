@@ -4,16 +4,24 @@ import (
 	"fmt"
 	"github.com/guptarohit/asciigraph"
 	"golang.org/x/exp/maps"
+	"golang.org/x/term"
 	"log"
 	"os"
 	"sort"
 	"stockcli/internal/config"
 	"stockcli/internal/data"
+	"syscall"
 	"time"
 )
 
 func main() {
 	args := config.ParseCmdlineArgs()
+
+	if args.CmdType == config.INIT {
+		setupConfiguration()
+		return
+	}
+
 	configs, err := config.LoadConfigFile()
 
 	if err != nil {
@@ -33,6 +41,25 @@ func main() {
 
 func getDataProvider(configs map[string]string) data.Provider {
 	return &data.AlphaVantageProvider{ApiKey: configs["ApiKey"]}
+}
+
+func setupConfiguration() {
+	println("Enter API key: ")
+	key, err := term.ReadPassword(syscall.Stdin)
+
+	if err != nil {
+		log.Fatal("Failed to read API key", err)
+	}
+
+	configs := make(map[string]string)
+	configs["ApiKey"] = string(key)
+
+	err = config.CreateConfigFile(configs)
+	if err != nil {
+		log.Fatal("Failed to create config file:", err)
+	}
+
+	log.Println("Successfully initialized stockcli")
 }
 
 func lookupQuote(ticker string, provider data.Provider) {

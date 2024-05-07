@@ -2,6 +2,7 @@ package config
 
 import (
 	"bufio"
+	"fmt"
 	"os"
 	"strings"
 )
@@ -9,13 +10,11 @@ import (
 const fileRelPath = "/.stockcli/config"
 
 func LoadConfigFile() (map[string]string, error) {
-	homeDir, err := os.UserHomeDir()
-
+	fullPath, err := getFullPath()
 	if err != nil {
 		return nil, err
 	}
 
-	fullPath := homeDir + fileRelPath
 	file, err := os.Open(fullPath)
 
 	if err != nil {
@@ -40,4 +39,35 @@ func LoadConfigFile() (map[string]string, error) {
 	}
 
 	return config, nil
+}
+
+func CreateConfigFile(configMap map[string]string) error {
+	fullPath, err := getFullPath()
+	if err != nil {
+		return err
+	}
+
+	file, err := os.Create(fullPath)
+	if err != nil {
+		return err
+	}
+
+	for key, value := range configMap {
+		_, err := fmt.Fprintf(file, "%s=%s\n", key, value)
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
+func getFullPath() (string, error) {
+	homeDir, err := os.UserHomeDir()
+
+	if err != nil {
+		return "", err
+	}
+
+	return homeDir + fileRelPath, nil
 }
