@@ -1,6 +1,6 @@
 package data
 
-// Quote a stock quote
+// Quote represents a stock quote
 type Quote struct {
 	// Ticker stock ticker
 	Ticker string
@@ -10,6 +10,7 @@ type Quote struct {
 	Price float64
 }
 
+// HistoricData for a stock
 type HistoricData struct {
 	// Ticker stock ticker
 	Ticker string

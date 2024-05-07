@@ -38,7 +38,7 @@ func lookupQuote(ticker string, provider data.Provider) {
 	quote, err := provider.Quote(ticker)
 
 	if err != nil {
-		fmt.Println("Failed to retrieve quote: " + err.Error())
+		fmt.Println("Failed to retrieve quote:", err.Error())
 		os.Exit(1)
 	}
 
@@ -49,7 +49,7 @@ func graphHistoricData(ticker string, provider data.Provider) {
 	historicData, err := provider.HistoricData(ticker)
 
 	if err != nil {
-		fmt.Println("Failed to retrieve historic data: " + err.Error())
+		fmt.Println("Failed to retrieve historic data:", err.Error())
 		os.Exit(1)
 	}
 
