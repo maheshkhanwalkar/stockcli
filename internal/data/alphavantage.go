@@ -7,10 +7,6 @@ import (
 	"time"
 )
 
-const alphaQuoteUrl = "https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol="
-const alphaCompanyInfoUrl = "https://www.alphavantage.co/query?function=OVERVIEW&symbol="
-const alphaHistoricDataUrl = "https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol="
-
 type QuoteResponse struct {
 	Quote struct {
 		Price string `json:"05. price"`
@@ -32,6 +28,9 @@ type AlphaVantageProvider struct {
 
 func (provider AlphaVantageProvider) Quote(ticker string) (*Quote, error) {
 	args := ticker + "&apikey=" + provider.ApiKey
+
+	const alphaQuoteUrl = "https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol="
+	const alphaCompanyInfoUrl = "https://www.alphavantage.co/query?function=OVERVIEW&symbol="
 
 	fullQuoteUrl := alphaQuoteUrl + args
 	fullCompanyInfoUrl := alphaCompanyInfoUrl + args
@@ -62,6 +61,8 @@ func (provider AlphaVantageProvider) Quote(ticker string) (*Quote, error) {
 
 func (provider AlphaVantageProvider) HistoricData(ticker string) (*HistoricData, error) {
 	args := ticker + "&apikey=" + provider.ApiKey
+
+	const alphaHistoricDataUrl = "https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol="
 
 	fullHistoricDataUrl := alphaHistoricDataUrl + args
 	historicData := HistoricDataResponse{}
