@@ -2,7 +2,7 @@ package data
 
 import (
 	"errors"
-	"stockcli/net"
+	"stockcli/internal/net"
 	"strconv"
 )
 

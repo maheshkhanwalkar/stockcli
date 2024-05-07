@@ -7,8 +7,8 @@ import (
 	"log"
 	"os"
 	"sort"
-	"stockcli/config"
-	"stockcli/data"
+	"stockcli/internal/config"
+	"stockcli/internal/data"
 )
 
 func main() {
