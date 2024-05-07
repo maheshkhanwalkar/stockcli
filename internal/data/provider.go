@@ -1,5 +1,7 @@
 package data
 
+import "time"
+
 // Quote represents a stock quote
 type Quote struct {
 	// Ticker stock ticker
@@ -15,7 +17,7 @@ type HistoricData struct {
 	// Ticker stock ticker
 	Ticker string
 	// Data historic data keyed by date
-	Data map[string]float64
+	Data map[time.Time]float64
 }
 
 // Provider data provider interface

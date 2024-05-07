@@ -9,6 +9,7 @@ import (
 	"sort"
 	"stockcli/internal/config"
 	"stockcli/internal/data"
+	"time"
 )
 
 func main() {
@@ -61,13 +62,17 @@ func graphHistoricData(ticker string, provider data.Provider) {
 
 func extractGraphData(data *data.HistoricData) []float64 {
 	result := make([]float64, 0, len(data.Data))
-
 	rawDays := maps.Keys(data.Data)
-	sort.Sort(sort.Reverse(sort.StringSlice(rawDays)))
 
-	days := make([]string, 30)
+	sort.Slice(rawDays, func(i, j int) bool {
+		return rawDays[i].After(rawDays[j])
+	})
+
+	days := make([]time.Time, 30)
 	copy(days, rawDays)
-	sort.Strings(days)
+	sort.Slice(days, func(i, j int) bool {
+		return days[i].Before(days[j])
+	})
 
 	for _, day := range days {
 		result = append(result, data.Data[day])

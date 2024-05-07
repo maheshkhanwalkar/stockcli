@@ -4,6 +4,7 @@ import (
 	"errors"
 	"stockcli/internal/net"
 	"strconv"
+	"time"
 )
 
 const alphaQuoteUrl = "https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol="
@@ -73,16 +74,23 @@ func (provider AlphaVantageProvider) HistoricData(ticker string) (*HistoricData,
 }
 
 func parseHistoricData(response *HistoricDataResponse, ticker string) (*HistoricData, error) {
-	result := make(map[string]float64)
+	result := make(map[time.Time]float64)
 
-	for time, value := range response.TimeSeries {
+	for timeStr, value := range response.TimeSeries {
 		closingPrice, err := strconv.ParseFloat(value["4. close"], 64)
 
 		if err != nil {
 			continue
 		}
 
-		result[time] = closingPrice
+		layout := "2006-01-02"
+		tt, err := time.Parse(layout, timeStr)
+
+		if err != nil {
+			continue
+		}
+
+		result[tt] = closingPrice
 	}
 
 	return &HistoricData{Ticker: ticker, Data: result}, nil
