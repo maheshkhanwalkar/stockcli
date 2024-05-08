@@ -82,7 +82,10 @@ func graphHistoricData(ticker string, provider data.Provider) {
 	}
 
 	graphData := extractGraphData(historicData)
-	graph := asciigraph.Plot(graphData, asciigraph.Height(30), asciigraph.Width(80))
+	colour := graphColour(graphData)
+
+	graph := asciigraph.Plot(graphData, asciigraph.Height(30), asciigraph.Width(80),
+		asciigraph.SeriesColors(colour))
 
 	fmt.Println(graph)
 }
@@ -95,6 +98,7 @@ func extractGraphData(data *data.HistoricData) []float64 {
 		return rawDays[i].After(rawDays[j])
 	})
 
+	// TODO: make this configurable
 	days := make([]time.Time, 30)
 	copy(days, rawDays)
 	sort.Slice(days, func(i, j int) bool {
@@ -106,4 +110,21 @@ func extractGraphData(data *data.HistoricData) []float64 {
 	}
 
 	return result
+}
+
+func graphColour(graphData []float64) asciigraph.AnsiColor {
+	if len(graphData) == 0 {
+		return asciigraph.Default
+	}
+
+	first := graphData[0]
+	last := graphData[len(graphData)-1]
+
+	if first < last {
+		return asciigraph.Green
+	} else if first > last {
+		return asciigraph.Red
+	} else {
+		return asciigraph.Default
+	}
 }
