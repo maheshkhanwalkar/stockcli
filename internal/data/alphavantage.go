@@ -2,7 +2,7 @@ package data
 
 import (
 	"errors"
-	"stockcli/internal/net"
+	"github.com/maheshkhanwalkar/stockcli/internal/net"
 	"strconv"
 	"time"
 )

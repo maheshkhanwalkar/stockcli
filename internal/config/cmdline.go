@@ -16,6 +16,7 @@ const (
 type CmdlineArgs struct {
 	Ticker  string
 	CmdType CmdType
+	Days    int
 }
 
 func ParseCmdlineArgs() *CmdlineArgs {
@@ -26,6 +27,9 @@ func ParseCmdlineArgs() *CmdlineArgs {
 
 	graphTicker := flag.String("graph", "", "Graph historic data for a stock ticker symbol")
 	flag.StringVar(graphTicker, "g", "", "Graph historic data for a stock ticker symbol")
+
+	days := flag.Int("days", 30, "Number of days")
+	flag.IntVar(days, "d", 30, "Number of days")
 
 	flag.Parse()
 
@@ -39,7 +43,7 @@ func ParseCmdlineArgs() *CmdlineArgs {
 	}
 
 	if *graphTicker != "" {
-		return &CmdlineArgs{Ticker: *graphTicker, CmdType: GRAPH}
+		return &CmdlineArgs{Ticker: *graphTicker, CmdType: GRAPH, Days: *days}
 	} else {
 		return &CmdlineArgs{Ticker: *lookupTicker, CmdType: LOOKUP}
 	}

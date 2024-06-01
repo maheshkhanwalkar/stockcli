@@ -1,6 +1,6 @@
-module stockcli
+module github.com/maheshkhanwalkar/stockcli
 
-go 1.20
+go 1.21
 
 require (
 	github.com/guptarohit/asciigraph v0.7.1

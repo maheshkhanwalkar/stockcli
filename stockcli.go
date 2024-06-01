@@ -3,13 +3,13 @@ package main
 import (
 	"fmt"
 	"github.com/guptarohit/asciigraph"
+	"github.com/maheshkhanwalkar/stockcli/internal/config"
+	"github.com/maheshkhanwalkar/stockcli/internal/data"
 	"golang.org/x/exp/maps"
 	"golang.org/x/term"
 	"log"
 	"os"
 	"sort"
-	"stockcli/internal/config"
-	"stockcli/internal/data"
 	"syscall"
 	"time"
 )
@@ -33,7 +33,7 @@ func main() {
 	if args.CmdType == config.LOOKUP {
 		lookupQuote(args.Ticker, provider)
 	} else if args.CmdType == config.GRAPH {
-		graphHistoricData(args.Ticker, provider)
+		graphHistoricData(args.Ticker, provider, args.Days)
 	} else {
 		log.Fatal("Unknown command: ", args.CmdType)
 	}
@@ -73,7 +73,7 @@ func lookupQuote(ticker string, provider data.Provider) {
 	fmt.Printf("Stock: %s, Name: %s, Price: %f\n", quote.Ticker, quote.Name, quote.Price)
 }
 
-func graphHistoricData(ticker string, provider data.Provider) {
+func graphHistoricData(ticker string, provider data.Provider, days int) {
 	historicData, err := provider.HistoricData(ticker)
 
 	if err != nil {
@@ -81,7 +81,7 @@ func graphHistoricData(ticker string, provider data.Provider) {
 		os.Exit(1)
 	}
 
-	graphData := extractGraphData(historicData)
+	graphData := extractGraphData(historicData, days)
 	colour := graphColour(graphData)
 
 	graph := asciigraph.Plot(graphData, asciigraph.Height(30), asciigraph.Width(80),
@@ -90,7 +90,7 @@ func graphHistoricData(ticker string, provider data.Provider) {
 	fmt.Println(graph)
 }
 
-func extractGraphData(data *data.HistoricData) []float64 {
+func extractGraphData(data *data.HistoricData, numDays int) []float64 {
 	result := make([]float64, 0, len(data.Data))
 	rawDays := maps.Keys(data.Data)
 
@@ -98,8 +98,7 @@ func extractGraphData(data *data.HistoricData) []float64 {
 		return rawDays[i].After(rawDays[j])
 	})
 
-	// TODO: make this configurable
-	days := make([]time.Time, 30)
+	days := make([]time.Time, min(numDays, len(data.Data)))
 	copy(days, rawDays)
 	sort.Slice(days, func(i, j int) bool {
 		return days[i].Before(days[j])
